@@ -35,7 +35,7 @@ namespace YogMinify
         // Add a subfix to the filename, i.e. "image.min.jpg".
         // Third parameter is expected file format so that we can correct it if
         // it was originally wrong, like a JPEG file with ".png" extension.
-        public static string AddSuffix(string filename, string suffix, string format, string output)
+        public static string AddPrefixSuffix(string filename, string prefix, string suffix, string format, string output)
         {
             string fDir = Path.GetDirectoryName(filename);
 
@@ -47,7 +47,7 @@ namespace YogMinify
 
             string fName = Path.GetFileNameWithoutExtension(filename);
             string fExt = "." + format.ToLower();
-            return Path.Combine(fDir, String.Concat(fName, suffix, fExt));
+            return Path.Combine(fDir, String.Concat(prefix, fName, suffix, fExt));
         }
 
         // Wait for a key press before continuing.

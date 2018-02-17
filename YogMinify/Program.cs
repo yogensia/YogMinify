@@ -38,7 +38,7 @@ namespace YogMinify
         static void Main(string[] args)
         {
             // Increment version.
-            Version version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+            Version version = Assembly.GetExecutingAssembly().GetName().Version;
             DateTime buildDate = new DateTime(2000, 1, 1).AddDays(version.Build).AddSeconds(version.Revision * 2);
             string displayableVersion = $"{version} ({buildDate})";
 
@@ -120,7 +120,7 @@ namespace YogMinify
                 }
 
                 // Generate output filename vars.
-                string newFile = Utils.AddSuffix(file, String.Format("{0}", HandleArgs.subfix), fileFormat, HandleArgs.output);
+                string newFile = Utils.AddPrefixSuffix(file, String.Format("{0}", HandleArgs.prefix), String.Format("{0}", HandleArgs.subfix), fileFormat, HandleArgs.output);
                 string newFileQuotes = '"' + newFile + '"';
 
                 Utils.Debug("Output: {0}", newFile);
