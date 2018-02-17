@@ -37,7 +37,7 @@ namespace YogMinify
         public string arguments;     // Arguments for the minifier execution.
         public string minifyFormat;  // Format supported by this minifier.
         public string fileFormat;    // Format of the image supplied.
-        public FileInfo file;          // Absolute path to file we are working on.
+        public FileInfo file;        // Absolute path to file we are working on.
 
         // Constructor.
         public Minifier(string _minifier, string _arguments, string _minifyFormat, string _fileFormat, string _file)

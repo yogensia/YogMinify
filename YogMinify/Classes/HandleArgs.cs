@@ -49,29 +49,29 @@ namespace YogMinify
             // Get arguments.
             var p = new OptionSet()
             {
-                { "o|output=", "Output file or directory.\n" +
+                { "o|output=", "Set output file or directory.\n" +
                   "If not provided, 'min' will be appended to the input filename.\n" +
                   "If the input provided is a directory, this will be the folder where new files will be saved, preserving original directory structure.",
                    (string v) => output = v },
                 { "f|format=", "Convert to specified format before minifying.",
                    (string v) => subfix = v },
-                { "q|quality=", "Quality of the JPEG compression from 0 to 100.\n(default value: 95)",
+                { "q|quality=", "Set quality of the JPEG compression from 0 to 100.\n(default value: 95)",
                    (int v) => quality = v },
-                { "l|libraries",  "Shows a message with info about the minify libraries used by YogTools and exit.",
+                { "l|libraries",  "Show a message with info about the minify libraries used by YogMinify and exit.",
                    v => showLibraries = v != null },
-                { "p|prefix=", "Prefix pattern used for output filename.\n" +
+                { "p|prefix=", "Set prefix pattern used for output filename.\n" +
                   "By default no prefix is added.\n" +
                   "Example: 'min_' will result in 'min_image.jpg'.",
                    (string v) => prefix = v },
-                { "s|subfix=", "Subfix pattern used for output filename.\n" +
+                { "s|subfix=", "Set subfix pattern used for output filename.\n" +
                   "By default '.min' is appended to the filename.\nExample: 'image.min.jpg'.",
                    (string v) => subfix = v },
-                { "w|overwrite", "Overwrites output file if it already exists.\n" +
+                { "w|overwrite", "Overwrite output file if it already exists.\n" +
                   "This setting will also force the program to run without pausing.",
                    v => { if (v != null) ++overwrite; } },
-                { "v|verbose", "Increases debug message verbosity.",
+                { "v|verbose", "Increase debug message verbosity.",
                    v => { if (v != null) ++verbosity; } },
-                { "h|help",  "Shows this message and exits.",
+                { "h|help",  "Show this message and exit.",
                    v => showHelp = v != null },
             };
 
