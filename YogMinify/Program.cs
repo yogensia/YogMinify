@@ -290,12 +290,12 @@ namespace YogMinify
                 //    fileFormat,
                 //    newFile);
 
-                //var pngrewrite = new Minifier(
-                //    "pngrewrite",
-                //    newFileQuotes + " " + newFileQuotes,
-                //    "PNG",
-                //    fileFormat,
-                //    newFile);
+                var pngrewrite = new Minifier(
+                    "pngrewrite",
+                    newFileQuotes + " " + newFileQuotes,
+                    "PNG",
+                    fileFormat,
+                    newFile);
 
                 var advpng = new Minifier(
                     "advpng",
