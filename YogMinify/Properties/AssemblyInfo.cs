@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("YogMinify")]
 [assembly: AssemblyDescription("Fast and easy console wrapper for several JPEG & PNG minifiers with argument support.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Yogensia")]
 [assembly: AssemblyProduct("YogMinify")]
-[assembly: AssemblyCopyright("© Yogensia. All rights reserved.")]
+[assembly: AssemblyCopyright("© 2018 Yogensia. All rights reserved.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyVersion("0.2.*")]
+// [assembly: AssemblyFileVersion("1.0.0.0")]

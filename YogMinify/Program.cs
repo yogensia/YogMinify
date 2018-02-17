@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Reflection;
 
 namespace YogMinify
 {
@@ -36,6 +37,15 @@ namespace YogMinify
     {
         static void Main(string[] args)
         {
+            // Increment version.
+            Version version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+            DateTime buildDate = new DateTime(2000, 1, 1).AddDays(version.Build).AddSeconds(version.Revision * 2);
+            string displayableVersion = $"{version} ({buildDate})";
+
+            // Set window title.
+            var windowTitle = "YogMinify v" + displayableVersion;
+            Console.Title = windowTitle;
+
             // Get list of input files from parsed raw arguments.
             List<string> extra = HandleArgs.GetRawArgs(args);
             string[] files = extra.ToArray();
@@ -51,8 +61,6 @@ namespace YogMinify
             // Iterate through files supplied.
             foreach (string file in files)
             {
-                Console.WriteLine();
-                Console.WriteLine();
                 Console.WriteLine("Working on file: {0}", Path.GetFileName(file));
 
                 Utils.Debug("Input: {0}", file);
@@ -326,6 +334,11 @@ namespace YogMinify
                     newFile);
 
                 SkipFile:;
+
+                Console.WriteLine();
+
+                // Some minifiers will change the window title, here we change it back.
+                Console.Title = windowTitle;
             } // End foreach.
 
             Utils.PressAnyKey(HandleArgs.overwrite);
