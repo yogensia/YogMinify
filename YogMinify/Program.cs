@@ -50,8 +50,8 @@ namespace YogMinify
             List<string> extra = HandleArgs.GetRawArgs(args);
             string[] files = extra.ToArray();
 
-            // If no files supplied, abort and send help.
-            if (files.Length < 1)
+            // If no files supplied or help argument supplied, abort and send help.
+            if (files.Length < 1 || HandleArgs.showHelp)
             {
                 var p = HandleArgs.GetOptionSet(args);
                 Utils.ShowHelp(p);
@@ -261,12 +261,6 @@ namespace YogMinify
                     "PNG",
                     fileFormat,
                     newFile);
-
-                //Minifier pngout = new Minifier(
-                //    "pngout",
-                //    "/q /y /r /d0 /mincodes0 /s-1 /kacTL,fcTL,fdAT " + newFileQuotes + " " + newFileQuotes,
-                //    "PNG",
-                //    fileFormat);
 
                 var optipng = new Minifier(
                     "optipng",

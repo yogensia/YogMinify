@@ -95,7 +95,7 @@ namespace YogMinify
                 Console.Write("Syntax error: ");
                 Console.WriteLine(e.Message);
                 Console.WriteLine();
-                Console.WriteLine("Try `YogTools --help' for more information.");
+                Console.WriteLine("Try `YogMinify --help' for more information.");
                 Console.WriteLine("If you think this is a bug feel free to report on Github: https://github.com/yogensia/YogMinify/issues");
                 Utils.PressAnyKey(overwrite);
                 return null;
