@@ -57,14 +57,16 @@ namespace YogMinify
         public void Minify()
         {
             // Create and run minifier process.
-            Console.WriteLine("Running " + minifier + " (" + minifyFormat + ")...");
+            Console.WriteLine("Running " + minifier + "...");
             Process process = new Process();
             process.StartInfo.FileName = @"Minifiers\" + minifier + ".exe";
             process.StartInfo.Arguments = arguments;
             Utils.Debug("with args: {0}", process.StartInfo.Arguments);
             process.StartInfo.UseShellExecute = false;
             process.StartInfo.RedirectStandardOutput = true;
+            process.StartInfo.RedirectStandardError = true;
             process.Start();
+            process.PriorityClass = ProcessPriorityClass.BelowNormal;
             process.WaitForExit();
 
             // Print file size.

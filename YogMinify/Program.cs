@@ -58,12 +58,28 @@ namespace YogMinify
                 Environment.Exit(0);
             }
 
-            // Iterate through files supplied.
-            foreach (string file in files)
-            {
-                Console.WriteLine("Working on file: {0}", Path.GetFileName(file));
+            // Initial console output.
+            Console.WriteLine("{0} file(s) supplied.", files.Length);
+            Console.WriteLine();
+            Console.WriteLine("---------------");
 
-                Utils.Debug("Input: {0}", file);
+            // Iterate through files supplied.
+            for (int i = 0; i < files.Length; i++)
+            {
+                // Store current index value.
+                string file = files[i];
+
+                // Initial file specific console output.
+                Console.WriteLine();
+                if (files.Length == 1)
+                    Console.WriteLine("Working on file: \"{0}\"", Path.GetFileName(file));
+                else
+                    Console.WriteLine("Working on file {0}/{1}: \"{2}\"", i + 1, files.Length, Path.GetFileName(file));
+
+                Utils.Debug("Input: \"{0}\"", file);
+
+                // Start timer.
+                var fileTimer = System.Diagnostics.Stopwatch.StartNew();
 
                 // Get file format.
                 string fileFormat = "";
@@ -150,9 +166,7 @@ namespace YogMinify
                     return;
                 }
 
-                // Print original file size.
-                var newFileInfo = new FileInfo(newFile);
-                Console.WriteLine("Original Size: {0}", Utils.SizeSuffix(newFileInfo.Length));
+                Console.WriteLine();
 
                 // GIF minifiers.
                 var gifsicle = new Minifier(
@@ -327,9 +341,45 @@ namespace YogMinify
                     fileFormat,
                     newFile);
 
-                SkipFile:;
+                // Stop timer and print it on console.
+                fileTimer.Stop();
+                TimeSpan ts = fileTimer.Elapsed;
+
+                string elapsedTime;
+
+                if (ts.Minutes > 0)
+                {
+                    elapsedTime = ts.ToString("mm'm, 'ss's, 'fff'ms'");
+                }
+                else if (ts.Seconds > 0)
+                {
+                    elapsedTime = ts.ToString("ss's, 'fff'ms'");
+                }
+                else
+                {
+                    elapsedTime = ts.ToString("fff'ms'");
+                }
 
                 Console.WriteLine();
+                Console.WriteLine("\"{0}\" minified in {1}.", Path.GetFileName(file), elapsedTime);
+                
+                // Print size stats.
+                var fileInfo = new FileInfo(file);
+                var originalSize = Utils.SizeSuffix(fileInfo.Length);
+                
+                var newFileInfo = new FileInfo(newFile);
+                var minfiedSize = Utils.SizeSuffix(newFileInfo.Length);
+
+                var compressionRatio = (double)newFileInfo.Length / fileInfo.Length;
+
+                compressionRatio = (Math.Floor(compressionRatio * 10000) / 100);
+                
+                Console.WriteLine("{0} => {1}, ({2}%)", originalSize, minfiedSize, compressionRatio.ToString());
+
+                Console.WriteLine();
+                Console.WriteLine("---------------");
+
+                SkipFile:;
 
                 // Some minifiers will change the window title, here we change it back.
                 Console.Title = windowTitle;
