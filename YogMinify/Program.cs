@@ -83,6 +83,8 @@ namespace YogMinify
 
                 // Get file format.
                 string fileFormat = "";
+                int canvasWidth = 0;
+                int canvasHeight = 0;
                 try
                 {
                     Bitmap img = (Bitmap)Image.FromFile(file);
@@ -90,14 +92,20 @@ namespace YogMinify
                     if (ImageFormat.Jpeg.Equals(img.RawFormat))
                     {
                         fileFormat = "JPG";
+                        canvasWidth = img.Width;
+                        canvasHeight = img.Height;
                     }
                     else if (ImageFormat.Png.Equals(img.RawFormat))
                     {
                         fileFormat = "PNG";
+                        canvasWidth = img.Width;
+                        canvasHeight = img.Height;
                     }
                     else if (ImageFormat.Gif.Equals(img.RawFormat))
                     {
                         fileFormat = "GIF";
+                        canvasWidth = img.Width;
+                        canvasHeight = img.Height;
                     }
 
                     // Free image file for use.
@@ -375,6 +383,14 @@ namespace YogMinify
                 compressionRatio = (Math.Floor(compressionRatio * 10000) / 100);
                 
                 Console.WriteLine("{0} => {1}, ({2}%)", originalSize, minfiedSize, compressionRatio.ToString());
+
+                int canvasSize = canvasWidth * canvasHeight;
+                if (canvasWidth > 0)
+                {
+                    Console.WriteLine("{0} x {1}, {2} pixels.", canvasWidth, canvasHeight, canvasSize);
+                    //Console.WriteLine("{0} ms per pixel.", Math.Round(ts.TotalMilliseconds / canvasSize, 3));
+                    //Console.WriteLine("{0} bytes per pixel.", Math.Round((double)newFileInfo.Length / canvasSize, 3));
+                }
 
                 Console.WriteLine();
                 Console.WriteLine("---------------");
