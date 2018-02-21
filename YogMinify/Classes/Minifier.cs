@@ -25,6 +25,7 @@
 #endregion License Information (GPL v3)
 
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 
@@ -56,6 +57,7 @@ namespace YogMinify
         // Methods.
         public void Minify()
         {
+            // Variables for process console output redirection.
             bool output = HandleArgs.verbosity <= 0;
             bool outputError = HandleArgs.verbosity <= 0;
 
@@ -68,11 +70,31 @@ namespace YogMinify
             process.StartInfo.UseShellExecute = false;
             process.StartInfo.RedirectStandardOutput = output;
             process.StartInfo.RedirectStandardError = outputError;
-            process.Start();
+
+            // Try to start minifier process.
+            try
+            {
+                process.Start();
+            }
+            catch (Win32Exception)
+            {
+                Console.WriteLine("Could not find minifier executable '" + minifier + ".exe'.");
+                Utils.PressAnyKey(HandleArgs.pause);
+                Environment.Exit(0);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("An error ocurred while trying to execute '" + minifier + ".exe':");
+                Console.WriteLine(e.Message);
+                Utils.PressAnyKey(HandleArgs.pause);
+                Environment.Exit(0);
+            }
+
+            // Set priority & wait for process to end.
             Utils.ChangePriority(process);
             process.WaitForExit();
 
-            // Print file size.
+            // Print image file size after running this minifier.
             Console.WriteLine("Current Size: {0}", Utils.SizeSuffix(file.Length));
         }
     }
