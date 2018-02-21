@@ -40,6 +40,7 @@ namespace YogMinify
         public static string subfix = ".min";            // Subfix added to output filename.
         public static string priority = "BelowNormal";   // Priority of Minifier processes.
         public static int overwrite = 0;                 // Overwrite output file without asking.
+        public static int pause = 0;                     // Show additional info on console.
         public static int verbosity = 0;                 // Show additional info on console.
         public static bool showLibraries = false;        // TODO: Show minify library information.
         public static bool showHelp = false;             // TOD: Show usage and arguments help.
@@ -71,9 +72,10 @@ namespace YogMinify
                   "By default Below Normal is used.\n" +
                   "Options are: Idle, BelowNormal, Normal, AboveNormal, High, Realtime.\n",
                    (string v) => priority = v },
-                { "w|overwrite", "Overwrite output file if it already exists.\n" +
-                  "This setting will also force the program to run without pausing.",
+                { "w|overwrite", "Overwrite output file if it already exists.",
                    v => { if (v != null) ++overwrite; } },
+                { "a|pause", "Pause when finished.",
+                   v => { if (v != null) ++pause; } },
                 { "v|verbose", "Increase debug message verbosity.",
                    v => { if (v != null) ++verbosity; } },
                 { "h|help",  "Show this message and exit.",

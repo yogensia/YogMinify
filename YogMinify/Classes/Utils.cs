@@ -36,7 +36,7 @@ namespace YogMinify
         // Add a subfix to the filename, i.e. "image.min.jpg".
         // Third parameter is expected file format so that we can correct it if
         // it was originally wrong, like a JPEG file with ".png" extension.
-        public static string AddPrefixSuffix(string filename, string prefix, string suffix, string format, string output)
+        public static string AddPrefixSuffix(string filename, string prefix, string suffix, string format, string output, bool temp = false)
         {
             string fDir = Path.GetDirectoryName(filename);
 
@@ -46,15 +46,21 @@ namespace YogMinify
                 fDir = output;
             }
 
+            // Use system temp folder if necessary.
+            if (temp)
+            {
+                fDir = Path.GetTempPath();
+            }
+
             string fName = Path.GetFileNameWithoutExtension(filename);
             string fExt = "." + format.ToLower();
             return Path.Combine(fDir, String.Concat(prefix, fName, suffix, fExt));
         }
 
         // Wait for a key press before continuing.
-        public static void PressAnyKey(int _overwrite)
+        public static void PressAnyKey(int pause)
         {
-            if (_overwrite == 0)
+            if (pause > 0)
             {
                 Console.WriteLine();
                 Console.WriteLine("Press any key to continue...");
@@ -72,7 +78,7 @@ namespace YogMinify
             Console.WriteLine("Additional arguments:");
             Console.WriteLine();
             p.WriteOptionDescriptions(Console.Out);
-            PressAnyKey(0);
+            PressAnyKey(1);
         }
 
         // TODO: Should fire when no images are supplied by user.
@@ -86,10 +92,10 @@ namespace YogMinify
             PressAnyKey(HandleArgs.overwrite);
         }
 
+        // Parse PriorityClass.
         public static void ChangePriority(Process process)
         {
-            ProcessPriorityClass priority;
-            ProcessPriorityClass.TryParse(HandleArgs.priority, out priority);
+            ProcessPriorityClass.TryParse(HandleArgs.priority, out ProcessPriorityClass priority);
             process.PriorityClass = priority;
         }
 
