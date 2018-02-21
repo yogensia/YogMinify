@@ -25,6 +25,7 @@
 #endregion License Information (GPL v3)
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using Mono.Options;
 
@@ -72,6 +73,24 @@ namespace YogMinify
             Console.WriteLine();
             p.WriteOptionDescriptions(Console.Out);
             PressAnyKey(0);
+        }
+
+        // TODO: Should fire when no images are supplied by user.
+        public static void SyntaxError(string e)
+        {
+            Console.WriteLine("Syntax error:");
+            Console.WriteLine(e);
+            Console.WriteLine();
+            Console.WriteLine("Try 'YogMinify --help' for more information.");
+            Console.WriteLine("If you think this is a bug feel free to report on Github: https://github.com/yogensia/YogMinify/issues");
+            PressAnyKey(HandleArgs.overwrite);
+        }
+
+        public static void ChangePriority(Process process)
+        {
+            ProcessPriorityClass priority;
+            ProcessPriorityClass.TryParse(HandleArgs.priority, out priority);
+            process.PriorityClass = priority;
         }
 
         // Write a line to console, only when verbose output is enabled.

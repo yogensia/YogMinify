@@ -58,6 +58,17 @@ namespace YogMinify
                 Environment.Exit(0);
             }
 
+            // Check for valid arguments.
+            if (HandleArgs.priority != "RealTime" &&
+                HandleArgs.priority != "High" &&
+                HandleArgs.priority != "AboveNormal" &&
+                HandleArgs.priority != "Normal" &&
+                HandleArgs.priority != "BelowNormal" &&
+                HandleArgs.priority != "Idle")
+            {
+                Utils.SyntaxError("Invalid process priority value. Allowed values are: Idle, BelowNormal, Normal, AboveNormal, High, Realtime.");
+            }
+
             // Initial console output.
             Console.WriteLine("{0} file(s) supplied.", files.Length);
             Console.WriteLine();

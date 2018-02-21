@@ -56,6 +56,9 @@ namespace YogMinify
         // Methods.
         public void Minify()
         {
+            bool output = HandleArgs.verbosity <= 0;
+            bool outputError = HandleArgs.verbosity <= 0;
+
             // Create and run minifier process.
             Console.WriteLine("Running " + minifier + "...");
             Process process = new Process();
@@ -63,10 +66,10 @@ namespace YogMinify
             process.StartInfo.Arguments = arguments;
             Utils.Debug("with args: {0}", process.StartInfo.Arguments);
             process.StartInfo.UseShellExecute = false;
-            process.StartInfo.RedirectStandardOutput = true;
-            process.StartInfo.RedirectStandardError = true;
+            process.StartInfo.RedirectStandardOutput = output;
+            process.StartInfo.RedirectStandardError = outputError;
             process.Start();
-            process.PriorityClass = ProcessPriorityClass.BelowNormal;
+            Utils.ChangePriority(process);
             process.WaitForExit();
 
             // Print file size.

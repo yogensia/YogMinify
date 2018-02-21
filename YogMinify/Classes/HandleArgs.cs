@@ -33,16 +33,17 @@ namespace YogMinify
     class HandleArgs
     {
         // Set variables.
-        public static string output = "";           // TODO: Output path.
-        public static string format = "";           // If not null specifies a format to convert to.
-        public static int quality = 95;             // Quality setting for compression.
-        public static string prefix = "";           // Prefix added to output filename.
-        public static string subfix = ".min";       // Subfix added to output filename.
-        public static int overwrite = 0;            // Overwrite output file without asking.
-        public static int verbosity = 0;            // Show additional info on console.
-        public static bool showLibraries = false;   // TODO: Show minify library information.
-        public static bool showHelp = false;        // TOD: Show usage and arguments help.
-        static List<string> inputFiles;             // List containing input files found in command line.
+        public static string output = "";                // TODO: Output path.
+        public static string format = "";                // If not null specifies a format to convert to.
+        public static int quality = 95;                  // Quality setting for compression.
+        public static string prefix = "";                // Prefix added to output filename.
+        public static string subfix = ".min";            // Subfix added to output filename.
+        public static string priority = "BelowNormal";   // Priority of Minifier processes.
+        public static int overwrite = 0;                 // Overwrite output file without asking.
+        public static int verbosity = 0;                 // Show additional info on console.
+        public static bool showLibraries = false;        // TODO: Show minify library information.
+        public static bool showHelp = false;             // TOD: Show usage and arguments help.
+        static List<string> inputFiles;                  // List containing input files found in command line.
 
         public static OptionSet GetOptionSet(string[] args)
         {
@@ -66,6 +67,10 @@ namespace YogMinify
                 { "s|subfix=", "Set subfix pattern used for output filename.\n" +
                   "By default '.min' is appended to the filename.\nExample: 'image.min.jpg'.",
                    (string v) => subfix = v },
+                { "r|priority=", "Set CPU priority for minifier processes.\n" +
+                  "By default Below Normal is used.\n" +
+                  "Options are: Idle, BelowNormal, Normal, AboveNormal, High, Realtime.\n",
+                   (string v) => priority = v },
                 { "w|overwrite", "Overwrite output file if it already exists.\n" +
                   "This setting will also force the program to run without pausing.",
                    v => { if (v != null) ++overwrite; } },
@@ -74,7 +79,6 @@ namespace YogMinify
                 { "h|help",  "Show this message and exit.",
                    v => showHelp = v != null },
             };
-
             return p;
         }
 
