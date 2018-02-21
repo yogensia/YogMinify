@@ -83,11 +83,9 @@ namespace YogMinify
                 // Initial file specific console output.
                 Console.WriteLine();
                 if (files.Length == 1)
-                    Console.WriteLine("Working on file: \"{0}\"", Path.GetFileName(file));
+                    Console.WriteLine("Working on file: '{0}'", Path.GetFileName(file));
                 else
-                    Console.WriteLine("Working on file {0}/{1}: \"{2}\"", i + 1, files.Length, Path.GetFileName(file));
-
-                Utils.Debug("Input: \"{0}\"", file);
+                    Console.WriteLine("Working on file {0}/{1}: '{2}'", i + 1, files.Length, Path.GetFileName(file));
 
                 // Start timer.
                 var fileTimer = System.Diagnostics.Stopwatch.StartNew();
@@ -135,7 +133,7 @@ namespace YogMinify
                     {
                         Console.WriteLine("Unknown file format! Skipping file...");
                         Utils.Debug(e.ToString());
-                        Utils.PressAnyKey(HandleArgs.overwrite);
+                        Utils.PressAnyKey(HandleArgs.pause);
                         goto SkipFile;
                     }
                 }
@@ -143,45 +141,35 @@ namespace YogMinify
                 {
                     Console.WriteLine("File not found! Skipping file...");
                     Utils.Debug(e.ToString());
-                    Utils.PressAnyKey(HandleArgs.overwrite);
+                    Utils.PressAnyKey(HandleArgs.pause);
                     goto SkipFile;
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine("Something went wrong! Skipping file...");
                     Utils.Debug(e.ToString());
-                    Utils.PressAnyKey(HandleArgs.overwrite);
+                    Utils.PressAnyKey(HandleArgs.pause);
                     goto SkipFile;
                 }
 
                 // Generate output filename vars.
+                string tempFile = Utils.AddPrefixSuffix(file, String.Format("{0}", HandleArgs.prefix), String.Format("{0}", HandleArgs.subfix), fileFormat, HandleArgs.output, true);
                 string newFile = Utils.AddPrefixSuffix(file, String.Format("{0}", HandleArgs.prefix), String.Format("{0}", HandleArgs.subfix), fileFormat, HandleArgs.output);
-                string newFileQuotes = '"' + newFile + '"';
+                string newFileQuotes = '"' + tempFile + '"';
 
-                Utils.Debug("Output: {0}", newFile);
+                Utils.Debug("Input: '{0}'", file);
+                Utils.Debug("Temp: '{0}'", tempFile);
+                Utils.Debug("Output: '{0}'", newFile);
 
-                // If output file already exists try to delete it.
-                // TODO: Should only auto delete on silent/overwrite mode, otherwise ask/skip.
+                // Make a copy of the file with subfix or prefix in temp folder and work on that.
                 try
                 {
-                    File.Delete(newFile);
+                    File.Copy(file, tempFile);
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine(e.Message);
-                    Utils.PressAnyKey(HandleArgs.overwrite);
-                    return;
-                }
-
-                // Make a copy of the file with subfix or prefix and work on that.
-                try
-                {
-                    File.Copy(file, newFile);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.Message);
-                    Utils.PressAnyKey(HandleArgs.overwrite);
+                    Utils.PressAnyKey(HandleArgs.pause);
                     return;
                 }
 
@@ -193,14 +181,14 @@ namespace YogMinify
                     "-w -j --no-conserve-memory -o " + newFileQuotes + " -O3 --no-comments --no-extensions --no-names " + newFileQuotes,
                     "GIF",
                     fileFormat,
-                    newFile);
+                    tempFile);
 
                 var gifsiclelossy = new Minifier( // TODO: only allow with a lossy argument.
                     "gifsicle-lossy",
                     "--lossy=35 -w -j --no-conserve-memory -o " + newFileQuotes + " -O3 --no-comments --no-extensions --no-names " + newFileQuotes,
                     "GIF",
                     fileFormat,
-                    newFile);
+                    tempFile);
 
                 // JPEG minifiers.
                 var jpegrecompress = new Minifier(
@@ -208,63 +196,63 @@ namespace YogMinify
                     "--method smallfry --quality high --min " + HandleArgs.quality + " --subsample disable --quiet --strip " + newFileQuotes + " " + newFileQuotes,
                     "JPG",
                     fileFormat,
-                    newFile);
+                    tempFile);
 
                 var jhead = new Minifier(
                     "jhead",
                     "-q -autorot -purejpg -di -dx -dt -zt " + newFileQuotes,
                     "JPG",
                     fileFormat,
-                    newFile);
+                    tempFile);
 
                 var leanify = new Minifier(
                     "leanify",
                     "-q " + newFileQuotes,
                     "JPG",
                     fileFormat,
-                    newFile);
+                    tempFile);
 
                 var magick = new Minifier(
                     "magick",
                     "convert -quiet -interlace Plane -define jpeg:optimize-coding=true -strip " + newFileQuotes + " " + newFileQuotes,
                     "JPG",
                     fileFormat,
-                    newFile);
+                    tempFile);
 
                 var jpegoptim = new Minifier(
                     "jpegoptim",
                     "-o -q --all-progressive --strip-all " + newFileQuotes,
                     "JPG",
                     fileFormat,
-                    newFile);
+                    tempFile);
 
                 var jpegtran = new Minifier(
                     "jpegtran",
                     "-progressive -optimize -copy none " + newFileQuotes + " " + newFileQuotes,
                     "JPG",
                     fileFormat,
-                    newFile);
+                    tempFile);
 
                 var mozjpegtran = new Minifier(
                     "mozjpegtran",
                     "-outfile " + newFileQuotes + " -progressive -copy none " + newFileQuotes,
                     "JPG",
                     fileFormat,
-                    newFile);
+                    tempFile);
 
                 var ECT = new Minifier(
                     "ECT",
                     "-quiet --allfilters --mt-deflate -progressive -strip " + newFileQuotes,
                     "JPG",
                     fileFormat,
-                    newFile);
+                    tempFile);
 
                 var pingo = new Minifier(
                     "pingo",
                     "-progressive " + newFileQuotes,
                     "JPG",
                     fileFormat,
-                    newFile);
+                    tempFile);
 
                 // PNG minifiers.
                 var apngopt = new Minifier(
@@ -272,42 +260,42 @@ namespace YogMinify
                     newFileQuotes + " " + newFileQuotes,
                     "PNG",
                     fileFormat,
-                    newFile);
+                    tempFile);
 
                 var pngquant = new Minifier(
                     "pngquant",
                     "--strip --quality=85-95 --speed 1 --ext .png --force " + newFileQuotes,
                     "PNG",
                     fileFormat,
-                    newFile);
+                    tempFile);
 
                 var PngOptimizer = new Minifier(
                     "PngOptimizer",
                     "-file:" + newFileQuotes,
                     "PNG",
                     fileFormat,
-                    newFile);
+                    tempFile);
 
                 var truepng = new Minifier(
                     "truepng",
                     "-o2 -tz -md remove all -g0 /i0 /tz /quiet /y /out " + newFileQuotes + " " + newFileQuotes,
                     "PNG",
                     fileFormat,
-                    newFile);
+                    tempFile);
 
                 var optipng = new Minifier(
                     "optipng",
                     "--zw32k -quiet -o6 -strip all " + newFileQuotes,
                     "PNG",
                     fileFormat,
-                    newFile);
+                    tempFile);
 
                 var leanifyPNG = new Minifier(
                     "leanify",
                     "-q -i 6 " + newFileQuotes,
                     "PNG",
                     fileFormat,
-                    newFile);
+                    tempFile);
 
                 // This one's a bit too slow with small returns, maybe leave it for an extreme setting.
                 //Minifier pngwolf = new Minifier(
@@ -322,35 +310,35 @@ namespace YogMinify
                     newFileQuotes + " " + newFileQuotes,
                     "PNG",
                     fileFormat,
-                    newFile);
+                    tempFile);
 
                 var advpng = new Minifier(
                     "advpng",
                     "-z -q -4 -i 6 " + newFileQuotes,
                     "PNG",
                     fileFormat,
-                    newFile);
+                    tempFile);
 
                 var ECTPNG = new Minifier(
                     "ECT",
                     "-quiet --allfilters --mt-deflate -strip -9 " + newFileQuotes,
                     "PNG",
                     fileFormat,
-                    newFile);
+                    tempFile);
 
                 var pingoPNG = new Minifier(
                     "pingo",
                     "-s8 " + newFileQuotes,
                     "PNG",
                     fileFormat,
-                    newFile);
+                    tempFile);
 
                 var deflopt = new Minifier(
                     "deflopt",
                     "/a /b /s " + newFileQuotes,
                     "PNG",
                     fileFormat,
-                    newFile);
+                    tempFile);
 
                 // TGA minifiers.
                 var magickTGA = new Minifier(
@@ -358,7 +346,32 @@ namespace YogMinify
                     "convert -quiet -compress RLE -strip " + newFileQuotes + " " + newFileQuotes,
                     "TGA",
                     fileFormat,
-                    newFile);
+                    tempFile);
+
+                // If output file already exists try to delete it.
+                // TODO: Should only auto delete on silent/overwrite mode, otherwise ask/skip.
+                try
+                {
+                    File.Delete(newFile);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                    Utils.PressAnyKey(HandleArgs.pause);
+                    return;
+                }
+                
+                // Move temp file to output path.
+                try
+                {
+                    File.Move(tempFile, newFile);
+                }
+                catch (Exception e) // TODO
+                {
+                    Console.WriteLine(e.Message);
+                    Utils.PressAnyKey(HandleArgs.pause);
+                    return;
+                }
 
                 // Stop timer and print it on console.
                 fileTimer.Stop();
@@ -380,7 +393,7 @@ namespace YogMinify
                 }
 
                 Console.WriteLine();
-                Console.WriteLine("\"{0}\" minified in {1}.", Path.GetFileName(file), elapsedTime);
+                Console.WriteLine("'{0}' minified in {1}.", Path.GetFileName(file), elapsedTime);
                 
                 // Print size stats.
                 var fileInfo = new FileInfo(file);
@@ -412,7 +425,7 @@ namespace YogMinify
                 Console.Title = windowTitle;
             } // End foreach.
 
-            Utils.PressAnyKey(HandleArgs.overwrite);
+            Utils.PressAnyKey(HandleArgs.pause);
         }
     }
 }
