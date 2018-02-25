@@ -16,5 +16,4 @@
 
 * Please make sure your code follows [C# coding conventions](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/inside-a-program/coding-conventions).
 
-Thanks!# YogMinify
-Fast and easy console wrapper for several JPEG &amp; PNG minifiers with argument support.
+Thanks!
