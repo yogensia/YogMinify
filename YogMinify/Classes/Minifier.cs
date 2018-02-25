@@ -12,7 +12,7 @@
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
@@ -26,6 +26,7 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
 
 namespace YogMinify
 {
@@ -61,7 +62,7 @@ namespace YogMinify
 
             // Create and run minifier process.
             Console.WriteLine("Running " + minifier + "...");
-            Process process = new Process();
+            var process = new Process();
             process.StartInfo.FileName = @"Minifiers\" + minifier + ".exe";
             process.StartInfo.Arguments = arguments;
             Utils.Debug("with args: {0}", process.StartInfo.Arguments);
@@ -92,8 +93,46 @@ namespace YogMinify
             Utils.ChangePriority(process);
             process.WaitForExit();
 
-            // Print image file size after running this minifier.
-            Console.WriteLine("Current Size: {0}", Utils.SizeSuffix(file.Length));
+            // Compare file sizes after compressing.
+            CheckSize();
+        }
+
+        private void CheckSize()
+        {
+            FileInfo smallestFile = new FileInfo(file.ToString() + "_smallest");
+
+            if (smallestFile.Exists)
+            {
+                // Smallest file already exists, so compare sizes.
+                if (file.Length < smallestFile.Length)
+                {
+                    // Smaller, save as new smallest
+                    Console.WriteLine("Smaller size: {0}", Utils.SizeSuffix(file.Length));
+
+                    smallestFile.Delete();
+                    File.Copy(file.ToString(), smallestFile.ToString());
+                }
+                else if (file.Length == smallestFile.Length)
+                {
+                    // Same size, ignore.
+                    Console.WriteLine("Same size: {0}", Utils.SizeSuffix(file.Length));
+                }
+                else if (file.Length > smallestFile.Length)
+                {
+                    // Bigger, revert the changes.
+                    Console.WriteLine("Bigger size: {0} (ignoring)", Utils.SizeSuffix(file.Length));
+
+                    file.Delete();
+                    File.Copy(smallestFile.ToString(), file.ToString());
+                }
+            }
+            else
+            {
+                // If no smallest size recorded, create it for the first time.
+                File.Copy(file.ToString(), smallestFile.ToString());
+
+                Console.WriteLine("New size: {0}", Utils.SizeSuffix(file.Length));
+            }
         }
     }
 }

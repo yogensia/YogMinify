@@ -12,7 +12,7 @@
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
@@ -92,6 +92,7 @@ namespace YogMinify
                 string fileFormat = "";
                 int canvasWidth = 0;
                 int canvasHeight = 0;
+
                 try
                 {
                     Bitmap img = (Bitmap)Image.FromFile(file);
@@ -122,6 +123,7 @@ namespace YogMinify
                 {
                     // If ImageFormat can't read file check for TGA and similar by file extension.
                     string ext = Path.GetExtension(file).ToUpper();
+
                     if (".TGA" == ext)
                     {
                         Console.WriteLine("Found compatible extension: TGA");
@@ -159,6 +161,22 @@ namespace YogMinify
                 Utils.Debug("Temp: '{0}'", tempFile);
                 Utils.Debug("Output: '{0}'", newFile);
 
+                // If temp file already exists for some reason, delete it.
+                FileInfo tempFileInfo = new FileInfo(tempFile);
+                if (tempFileInfo.Exists)
+                {
+                    try
+                    {
+                        tempFileInfo.Delete();
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("Temporary file '{0}' already exists and could not be deleted, probably in use. Skipping file...", tempFileInfo);
+                        Utils.PressAnyKey(HandleArgs.pause);
+                        goto SkipFile;
+                    }
+                }
+
                 // Make a copy of the file with subfix or prefix in temp folder and work on that.
                 try
                 {
@@ -172,6 +190,12 @@ namespace YogMinify
                 }
 
                 Console.WriteLine();
+
+                // Log original file size.
+                var fileInfo = new FileInfo(file);
+                var originalSize = Utils.SizeSuffix(fileInfo.Length);
+
+                Console.WriteLine("Original size: {0}", originalSize);
 
                 // GIF minifiers.
                 var gifsicle = new Minifier(
@@ -358,7 +382,7 @@ namespace YogMinify
                     Utils.PressAnyKey(HandleArgs.pause);
                     return;
                 }
-                
+
                 // Move temp file to output path.
                 try
                 {
@@ -392,18 +416,15 @@ namespace YogMinify
 
                 Console.WriteLine();
                 Console.WriteLine("'{0}' minified in {1}.", Path.GetFileName(file), elapsedTime);
-                
+
                 // Print size stats.
-                var fileInfo = new FileInfo(file);
-                var originalSize = Utils.SizeSuffix(fileInfo.Length);
-                
                 var newFileInfo = new FileInfo(newFile);
                 var minfiedSize = Utils.SizeSuffix(newFileInfo.Length);
 
                 var compressionRatio = (double)newFileInfo.Length / fileInfo.Length;
 
                 compressionRatio = (Math.Floor(compressionRatio * 10000) / 100);
-                
+
                 Console.WriteLine("{0} => {1}, ({2}%)", originalSize, minfiedSize, compressionRatio.ToString());
 
                 int canvasSize = canvasWidth * canvasHeight;
@@ -416,6 +437,10 @@ namespace YogMinify
 
                 Console.WriteLine();
                 Console.WriteLine("---------------");
+
+                // After finishing with current file, flush size comparison temp file.
+                FileInfo smallestFile = new FileInfo(tempFile.ToString() + "_smallest");
+                smallestFile.Delete();
 
                 SkipFile:;
 
