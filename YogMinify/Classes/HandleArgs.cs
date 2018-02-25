@@ -12,7 +12,7 @@
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
@@ -41,13 +41,13 @@ namespace YogMinify
         public static int pause = 0;                     // Show additional info on console.
         public static int verbosity = 0;                 // Show additional info on console.
         public static bool showLibraries = false;        // TODO: Show minify library information.
-        public static bool showHelp = false;             // TOD: Show usage and arguments help.
+        public static bool showHelp = false;             // TODO: Show usage and arguments help.
         static List<string> inputFiles;                  // List containing input files found in command line.
 
         public static OptionSet GetOptionSet(string[] args)
         {
             // Get arguments.
-            var p = new OptionSet()
+            var p = new OptionSet
             {
                 { "o|output=", "Set output file or directory.\n" +
                   "If not provided, 'min' will be appended to the input filename.\n" +
