@@ -56,6 +56,9 @@ namespace YogMinify
         // Methods.
         public void Minify()
         {
+            // If smallest size file doesn't exist yet, create one.
+            SetupSmallestSize();
+
             // Variables for process console output redirection.
             bool output = HandleArgs.verbosity <= 0;
             bool outputError = HandleArgs.verbosity <= 0;
@@ -97,6 +100,17 @@ namespace YogMinify
             CheckSize();
         }
 
+        private void SetupSmallestSize()
+        {
+            FileInfo smallestFile = new FileInfo(file.ToString() + "_smallest");
+
+            // If no smallest size recorded, create it for the first time.
+            if (!smallestFile.Exists)
+            {
+                File.Copy(file.ToString(), smallestFile.ToString());
+            }
+        }
+
         private void CheckSize()
         {
             FileInfo smallestFile = new FileInfo(file.ToString() + "_smallest");
@@ -106,7 +120,7 @@ namespace YogMinify
                 // Smallest file already exists, so compare sizes.
                 if (file.Length < smallestFile.Length)
                 {
-                    // Smaller, save as new smallest
+                    // Smaller, save as new smallest.
                     Console.WriteLine("Smaller size: {0}", Utils.SizeSuffix(file.Length));
 
                     smallestFile.Delete();
@@ -125,13 +139,6 @@ namespace YogMinify
                     file.Delete();
                     File.Copy(smallestFile.ToString(), file.ToString());
                 }
-            }
-            else
-            {
-                // If no smallest size recorded, create it for the first time.
-                File.Copy(file.ToString(), smallestFile.ToString());
-
-                Console.WriteLine("New size: {0}", Utils.SizeSuffix(file.Length));
             }
         }
     }
