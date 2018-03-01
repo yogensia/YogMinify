@@ -40,9 +40,9 @@ YogMinify is written in C# by Yogensia.
 
 YogMinify is inspired by [FileOptimizer](https://sourceforge.net/projects/nikkhokkho/) (written by Javier Gutiérrez Chamorro). Most minifiers and arguments are based on those found in FileOptimizer.
 
-Thanks to [Rafaël De Jongh](https://www.rafaeldejongh.com/) & [Saghen](https://github.com/Saghen) for beta testing and feedback.
+Thanks to [Rafaël De Jongh](https://www.rafaeldejongh.com/) for beta testing and feedback.
 
-Thanks to the creators of all the minifier libraries. Without their hard work this tools would not exist:
+Thanks to the creators of all the minifier libraries. Without their hard work this tool would not exist:
 
 - **AdvanceCOMP PNG** by Andrea Mazzoleni, Filipe Estima (GNU GPL v3).
 - **APNG Optimizer** by Max Stepin (zlib).
