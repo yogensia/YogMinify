@@ -40,6 +40,9 @@ namespace YogMinify
             DateTime buildDate = new DateTime(2000, 1, 1).AddDays(version.Build).AddSeconds(version.Revision * 2);
             string displayableVersion = $"{version} ({buildDate})";
 
+            // Hide console cursor during normal operation.
+            Console.CursorVisible = false;
+
             // Set window title.
             var windowTitle = "YogMinify v" + displayableVersion;
             Console.Title = windowTitle;
@@ -70,11 +73,15 @@ namespace YogMinify
             // Initial console output.
             Console.WriteLine("{0} file(s) supplied.", files.Length);
             Console.WriteLine();
-            Console.WriteLine("---------------");
+            Console.WriteLine("===============");
 
             // Iterate through files supplied.
             for (int i = 0; i < files.Length; i++)
             {
+                // TODO: Handle directories: If current path is a file continue
+                // as usual. If it is a directory call ProcessDirectory() and
+                // work on all files found. Refactor Program.Main() as needed.
+
                 // Store current index value.
                 string file = files[i];
 
@@ -133,7 +140,6 @@ namespace YogMinify
                     {
                         Console.WriteLine("Unknown file format! Skipping file...");
                         Utils.Debug(e.ToString());
-                        Utils.PressAnyKey(HandleArgs.pause);
                         goto SkipFile;
                     }
                 }
@@ -141,20 +147,18 @@ namespace YogMinify
                 {
                     Console.WriteLine("File not found! Skipping file...");
                     Utils.Debug(e.ToString());
-                    Utils.PressAnyKey(HandleArgs.pause);
                     goto SkipFile;
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine("Something went wrong! Skipping file...");
                     Utils.Debug(e.ToString());
-                    Utils.PressAnyKey(HandleArgs.pause);
                     goto SkipFile;
                 }
 
                 // Generate output filename vars.
-                string tempFile = Utils.AddPrefixSuffix(file, String.Format("{0}", HandleArgs.prefix), String.Format("{0}", HandleArgs.subfix), fileFormat, HandleArgs.output, true);
-                string newFile = Utils.AddPrefixSuffix(file, String.Format("{0}", HandleArgs.prefix), String.Format("{0}", HandleArgs.subfix), fileFormat, HandleArgs.output);
+                string tempFile = Utils.AddPrefixSuffix(file, String.Format("{0}", HandleArgs.prefix), String.Format("{0}", HandleArgs.suffix), fileFormat, HandleArgs.output, true);
+                string newFile = Utils.AddPrefixSuffix(file, String.Format("{0}", HandleArgs.prefix), String.Format("{0}", HandleArgs.suffix), fileFormat, HandleArgs.output);
                 string newFileQuotes = '"' + tempFile + '"';
 
                 Utils.Debug("Input: '{0}'", file);
@@ -195,11 +199,13 @@ namespace YogMinify
                 var fileInfo = new FileInfo(file);
                 var originalSize = Utils.SizeSuffix(fileInfo.Length);
 
-                Console.WriteLine("Original size: {0}", originalSize);
+                Utils.PrintStats("Original size", "", Utils.SizeSuffix(fileInfo.Length));
+                Console.WriteLine("-----------------------------------");
 
                 // GIF minifiers.
                 var gifsicle = new Minifier(
                     "gifsicle",
+                    "GIFsicle",
                     "-w -j --no-conserve-memory -o " + newFileQuotes + " -O3 --no-comments --no-extensions --no-names " + newFileQuotes,
                     "GIF",
                     fileFormat,
@@ -207,6 +213,7 @@ namespace YogMinify
 
                 var gifsiclelossy = new Minifier( // TODO: only allow with a lossy argument.
                     "gifsicle-lossy",
+                    "GIFsicle-Lossy",
                     "--lossy=35 -w -j --no-conserve-memory -o " + newFileQuotes + " -O3 --no-comments --no-extensions --no-names " + newFileQuotes,
                     "GIF",
                     fileFormat,
@@ -215,6 +222,7 @@ namespace YogMinify
                 // JPEG minifiers.
                 var jpegrecompress = new Minifier(
                     "jpeg-recompress",
+                    "JPEG-Recompress",
                     "--method smallfry --quality high --min " + HandleArgs.quality + " --subsample disable --quiet --strip " + newFileQuotes + " " + newFileQuotes,
                     "JPG",
                     fileFormat,
@@ -222,6 +230,7 @@ namespace YogMinify
 
                 var jhead = new Minifier(
                     "jhead",
+                    "JHead",
                     "-q -autorot -purejpg -di -dx -dt -zt " + newFileQuotes,
                     "JPG",
                     fileFormat,
@@ -229,6 +238,7 @@ namespace YogMinify
 
                 var leanify = new Minifier(
                     "leanify",
+                    "Leanify",
                     "-q " + newFileQuotes,
                     "JPG",
                     fileFormat,
@@ -236,6 +246,7 @@ namespace YogMinify
 
                 var magick = new Minifier(
                     "magick",
+                    "ImageMagick",
                     "convert -quiet -interlace Plane -define jpeg:optimize-coding=true -strip " + newFileQuotes + " " + newFileQuotes,
                     "JPG",
                     fileFormat,
@@ -243,13 +254,15 @@ namespace YogMinify
 
                 var jpegoptim = new Minifier(
                     "jpegoptim",
-                    "-o -q --all-progressive --strip-all " + newFileQuotes,
+                    "JPEGoptim",
+                    "-o -q --all-progressive --strip-all --max=" + HandleArgs.quality + " " + newFileQuotes,
                     "JPG",
                     fileFormat,
                     tempFile);
 
                 var jpegtran = new Minifier(
                     "jpegtran",
+                    "JPEGtran",
                     "-progressive -optimize -copy none " + newFileQuotes + " " + newFileQuotes,
                     "JPG",
                     fileFormat,
@@ -257,12 +270,14 @@ namespace YogMinify
 
                 var mozjpegtran = new Minifier(
                     "mozjpegtran",
+                    "MozJPEGtran",
                     "-outfile " + newFileQuotes + " -progressive -copy none " + newFileQuotes,
                     "JPG",
                     fileFormat,
                     tempFile);
 
                 var ECT = new Minifier(
+                    "ECT",
                     "ECT",
                     "-quiet --allfilters --mt-deflate -progressive -strip " + newFileQuotes,
                     "JPG",
@@ -271,6 +286,7 @@ namespace YogMinify
 
                 var pingo = new Minifier(
                     "pingo",
+                    "Pingo",
                     "-progressive " + newFileQuotes,
                     "JPG",
                     fileFormat,
@@ -279,6 +295,7 @@ namespace YogMinify
                 // PNG minifiers.
                 var apngopt = new Minifier(
                     "apngopt",
+                    "APNGopt",
                     newFileQuotes + " " + newFileQuotes,
                     "PNG",
                     fileFormat,
@@ -286,13 +303,15 @@ namespace YogMinify
 
                 var pngquant = new Minifier(
                     "pngquant",
-                    "--strip --quality=85-95 --speed 1 --ext .png --force " + newFileQuotes,
+                    "PNGquant",
+                    "--strip --quality=85-90 --speed 1 --ext .png --force " + newFileQuotes,
                     "PNG",
                     fileFormat,
                     tempFile);
 
                 var PngOptimizer = new Minifier(
                     "PngOptimizer",
+                    "PNGOptimizer",
                     "-file:" + newFileQuotes,
                     "PNG",
                     fileFormat,
@@ -300,6 +319,7 @@ namespace YogMinify
 
                 var truepng = new Minifier(
                     "truepng",
+                    "TruePNG",
                     "-o2 -tz -md remove all -g0 /i0 /tz /quiet /y /out " + newFileQuotes + " " + newFileQuotes,
                     "PNG",
                     fileFormat,
@@ -307,6 +327,7 @@ namespace YogMinify
 
                 var optipng = new Minifier(
                     "optipng",
+                    "OptiPNG",
                     "--zw32k -quiet -o6 -strip all " + newFileQuotes,
                     "PNG",
                     fileFormat,
@@ -314,21 +335,15 @@ namespace YogMinify
 
                 var leanifyPNG = new Minifier(
                     "leanify",
+                    "Leanify",
                     "-q -i 6 " + newFileQuotes,
                     "PNG",
                     fileFormat,
                     tempFile);
 
-                // This one's a bit too slow with small returns, maybe leave it for an extreme setting.
-                //Minifier pngwolf = new Minifier(
-                //    "pngwolf",
-                //    "--out-deflate=zopfli,iter=6 --in=" + newFileQuotes + " --out=" + newFileQuotes,
-                //    "PNG",
-                //    fileFormat,
-                //    newFile);
-
                 var pngrewrite = new Minifier(
                     "pngrewrite",
+                    "PNGrewrite",
                     newFileQuotes + " " + newFileQuotes,
                     "PNG",
                     fileFormat,
@@ -336,12 +351,14 @@ namespace YogMinify
 
                 var advpng = new Minifier(
                     "advpng",
+                    "AdvPNG",
                     "-z -q -4 -i 6 " + newFileQuotes,
                     "PNG",
                     fileFormat,
                     tempFile);
 
                 var ECTPNG = new Minifier(
+                    "ECT",
                     "ECT",
                     "-quiet --allfilters --mt-deflate -strip -9 " + newFileQuotes,
                     "PNG",
@@ -350,6 +367,7 @@ namespace YogMinify
 
                 var pingoPNG = new Minifier(
                     "pingo",
+                    "Pingo",
                     "-s8 " + newFileQuotes,
                     "PNG",
                     fileFormat,
@@ -357,6 +375,7 @@ namespace YogMinify
 
                 var deflopt = new Minifier(
                     "deflopt",
+                    "Deflopt",
                     "/a /b /s " + newFileQuotes,
                     "PNG",
                     fileFormat,
@@ -365,6 +384,7 @@ namespace YogMinify
                 // TGA minifiers.
                 var magickTGA = new Minifier(
                     "magick",
+                    "ImageMagick",
                     "convert -quiet -compress RLE -strip " + newFileQuotes + " " + newFileQuotes,
                     "TGA",
                     fileFormat,
@@ -414,6 +434,7 @@ namespace YogMinify
                     elapsedTime = ts.ToString("fff'ms'");
                 }
 
+                Console.WriteLine("-----------------------------------");
                 Console.WriteLine();
                 Console.WriteLine("'{0}' minified in {1}.", Path.GetFileName(file), elapsedTime);
 
@@ -436,7 +457,7 @@ namespace YogMinify
                 }
 
                 Console.WriteLine();
-                Console.WriteLine("---------------");
+                Console.WriteLine("===============");
 
                 // After finishing with current file, flush size comparison temp file.
                 FileInfo smallestFile = new FileInfo(tempFile.ToString() + "_smallest");
