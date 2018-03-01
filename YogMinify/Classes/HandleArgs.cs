@@ -33,9 +33,9 @@ namespace YogMinify
         // Set variables.
         public static string output = "";                // TODO: Output path.
         public static string format = "";                // If not null specifies a format to convert to.
-        public static int quality = 95;                  // Quality setting for compression.
+        public static int quality = 90;                  // Quality setting for compression.
         public static string prefix = "";                // Prefix added to output filename.
-        public static string subfix = ".min";            // Subfix added to output filename.
+        public static string suffix = ".min";            // Suffix added to output filename.
         public static string priority = "BelowNormal";   // Priority of Minifier processes.
         public static int overwrite = 0;                 // Overwrite output file without asking.
         public static int pause = 0;                     // Show additional info on console.
@@ -54,7 +54,7 @@ namespace YogMinify
                   "If the input provided is a directory, this will be the folder where new files will be saved, preserving original directory structure.",
                    (string v) => output = v },
                 { "f|format=", "Convert to specified format before minifying.",
-                   (string v) => subfix = v },
+                   (string v) => format = v },
                 { "q|quality=", "Set quality of the JPEG compression from 0 to 100.\n(default value: 95)",
                    (int v) => quality = v },
                 { "l|libraries",  "Show a message with info about the minify libraries used by YogMinify and exit.",
@@ -63,9 +63,9 @@ namespace YogMinify
                   "By default no prefix is added.\n" +
                   "Example: 'min_' will result in 'min_image.jpg'.",
                    (string v) => prefix = v },
-                { "s|subfix=", "Set subfix pattern used for output filename.\n" +
+                { "s|suffix=", "Set subfix pattern used for output filename.\n" +
                   "By default '.min' is appended to the filename.\nExample: 'image.min.jpg'.",
-                   (string v) => subfix = v },
+                   (string v) => suffix = v },
                 { "r|priority=", "Set CPU priority for minifier processes.\n" +
                   "By default Below Normal is used.\n" +
                   "Options are: Idle, BelowNormal, Normal, AboveNormal, High, Realtime.\n",
