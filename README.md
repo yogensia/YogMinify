@@ -40,7 +40,7 @@ YogMinify is written in C# by Yogensia.
 
 YogMinify is inspired by [FileOptimizer](https://sourceforge.net/projects/nikkhokkho/) (written by Javier Gutiérrez Chamorro). Most minifiers and arguments are based on those found in FileOptimizer.
 
-Thanks to [Rafaël De Jong](https://www.rafaeldejong.com/) & [Lyam Dyer]() for beta testing and feedback.
+Thanks to [Rafaël De Jongh](https://www.rafaeldejongh.com/) & [Saghen](https://github.com/Saghen) for beta testing and feedback.
 
 Thanks to the creators of all the minifier libraries. Without their hard work this tools would not exist:
 
