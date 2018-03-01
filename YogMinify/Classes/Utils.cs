@@ -61,8 +61,10 @@ namespace YogMinify
             if (pause > 0)
             {
                 Console.WriteLine();
-                Console.WriteLine("Press any key to continue...");
+                Console.Write("Press any key to continue...");
+                Console.CursorVisible = true;
                 ConsoleKeyInfo cki = Console.ReadKey();
+                Console.CursorVisible = false;
             }
         }
 
@@ -125,6 +127,21 @@ namespace YogMinify
             }
 
             return string.Format("{0:n" + decimalPlaces + "} {1}", dValue, SizeSuffixes[i]);
+        }
+
+        // Print a formatted line of stats for current minifier.
+        public static void PrintStats(string name, string sizeResult, string size)
+        {
+            // 55 character base length.
+            string dots = "...................................";
+
+            // Get string lengths.
+            int minifierStringLength = name.Length;
+            int sizeStringLength = size.Length;
+
+            // Trim dots and concatenate.
+            dots = dots.Remove(0, minifierStringLength + sizeStringLength);
+            Console.WriteLine("\r" + name + dots + size + " " + sizeResult);
         }
     }
 }

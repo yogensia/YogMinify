@@ -33,20 +33,22 @@ namespace YogMinify
     class Minifier
     {
         // Properties.
-        public string minifier;      // Name of the minifier.
-        public string arguments;     // Arguments for the minifier execution.
-        public string minifyFormat;  // Format supported by this minifier.
-        public string fileFormat;    // Format of the image supplied.
-        public FileInfo file;        // Absolute path to file we are working on.
+        public string minifier;          // Name of the minifier executable.
+        public string minifierNicename;  // Name of the minifier.
+        public string arguments;         // Arguments for the minifier execution.
+        public string minifyFormat;      // Format supported by this minifier.
+        public string fileFormat;        // Format of the image supplied.
+        public FileInfo file;            // Absolute path to file we are working on.
 
         // Constructor.
-        public Minifier(string _minifier, string _arguments, string _minifyFormat, string _fileFormat, string _file)
+        public Minifier(string _minifier, string _minifierNicename, string _arguments, string _minifyFormat, string _fileFormat, string _file)
         {
-            minifier     = _minifier;
-            arguments    = _arguments;
-            minifyFormat = _minifyFormat;
-            fileFormat   = _fileFormat;
-            file         = new FileInfo(_file);
+            minifier         = _minifier;
+            minifierNicename = _minifierNicename;
+            arguments        = _arguments;
+            minifyFormat     = _minifyFormat;
+            fileFormat       = _fileFormat;
+            file             = new FileInfo(_file);
 
             // Check the image format matches this minifier, if so run it.
             if (minifyFormat == fileFormat)
@@ -54,7 +56,7 @@ namespace YogMinify
         }
 
         // Methods.
-        public void Minify()
+        private void Minify()
         {
             // If smallest size file doesn't exist yet, create one.
             SetupSmallestSize();
@@ -64,16 +66,15 @@ namespace YogMinify
             bool outputError = HandleArgs.verbosity <= 0;
 
             // Create and run minifier process.
-            Console.WriteLine("Running " + minifier + "...");
             var process = new Process();
             process.StartInfo.FileName = @"Minifiers\" + minifier + ".exe";
             process.StartInfo.Arguments = arguments;
-            Utils.Debug("with args: {0}", process.StartInfo.Arguments);
             process.StartInfo.UseShellExecute = false;
             process.StartInfo.RedirectStandardOutput = output;
             process.StartInfo.RedirectStandardError = outputError;
 
             // Try to start minifier process.
+            // TODO: Skip to next minifier if this one fails instead of aborting.
             try
             {
                 process.Start();
@@ -94,6 +95,10 @@ namespace YogMinify
 
             // Set priority & wait for process to end.
             Utils.ChangePriority(process);
+
+            // Animate console.
+            MinifyAnimation(process);
+
             process.WaitForExit();
 
             // Compare file sizes after compressing.
@@ -102,6 +107,7 @@ namespace YogMinify
 
         private void SetupSmallestSize()
         {
+            // TODO: Keep track of smallest size in variable instead of a file.
             FileInfo smallestFile = new FileInfo(file.ToString() + "_smallest");
 
             // If no smallest size recorded, create it for the first time.
@@ -121,7 +127,8 @@ namespace YogMinify
                 if (file.Length < smallestFile.Length)
                 {
                     // Smaller, save as new smallest.
-                    Console.WriteLine("Smaller size: {0}", Utils.SizeSuffix(file.Length));
+                    Utils.PrintStats(minifierNicename, "(smaller)", Utils.SizeSuffix(file.Length));
+                    Utils.Debug("with args: {0}", arguments);
 
                     smallestFile.Delete();
                     File.Copy(file.ToString(), smallestFile.ToString());
@@ -129,15 +136,52 @@ namespace YogMinify
                 else if (file.Length == smallestFile.Length)
                 {
                     // Same size, ignore.
-                    Console.WriteLine("Same size: {0}", Utils.SizeSuffix(file.Length));
+                    Utils.PrintStats(minifierNicename, "(same)", Utils.SizeSuffix(file.Length));
+                    Utils.Debug("with args: {0}", arguments);
                 }
                 else if (file.Length > smallestFile.Length)
                 {
                     // Bigger, revert the changes.
-                    Console.WriteLine("Bigger size: {0} (ignoring)", Utils.SizeSuffix(file.Length));
+                    Utils.PrintStats(minifierNicename, "(bigger, ignoring)", Utils.SizeSuffix(file.Length));
+                    Utils.Debug("with args: {0}", arguments);
 
                     file.Delete();
                     File.Copy(smallestFile.ToString(), file.ToString());
+                }
+            }
+        }
+
+        private void MinifyAnimation(Process process)
+        {
+            // Animate console output while process is running.
+            // Uses carriage return to animate current line.
+            while (!process.HasExited)
+            {
+                // Make sure to break from loop as soon as minifier
+                // finishes compression to maintain performance.
+                if (process.HasExited) break;
+
+                // Loops help keep higher frametimes.
+                // Longer Sleep times would negatively affect performance.
+                for (int i = 0; i < 50; i++)
+                {
+                    if (process.HasExited) break;
+                    Thread.Sleep(10);
+                    Console.Write("\r" + minifierNicename + ".  ");
+                }
+
+                for (int i = 0; i < 50; i++)
+                {
+                    if (process.HasExited) break;
+                    Thread.Sleep(10);
+                    Console.Write("\r" + minifierNicename + ".. ");
+                }
+
+                for (int i = 0; i < 50; i++)
+                {
+                    if (process.HasExited) break;
+                    Thread.Sleep(10);
+                    Console.Write("\r" + minifierNicename + "...");
                 }
             }
         }
