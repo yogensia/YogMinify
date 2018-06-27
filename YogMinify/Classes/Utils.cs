@@ -52,6 +52,13 @@ namespace YogMinify
 
             string fName = Path.GetFileNameWithoutExtension(filename);
             string fExt = "." + format.ToLower();
+
+            // If APNG format, fix extension (rename to ".png").
+            if (fExt == ".apng")
+            {
+                fExt = ".png";
+            }
+
             return Path.Combine(fDir, String.Concat(prefix, fName, suffix, fExt));
         }
 

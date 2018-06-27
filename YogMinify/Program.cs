@@ -27,6 +27,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 
 namespace YogMinify
@@ -154,6 +155,15 @@ namespace YogMinify
                     Console.WriteLine("Something went wrong! Skipping file...");
                     Utils.Debug(e.ToString());
                     goto SkipFile;
+                }
+
+                // If detected a PNG file search its header to check for Animated PNG.
+                if (fileFormat == "PNG")
+                {
+                    if (File.ReadLines(file).Any(line => line.Contains("acTL")))
+                    {
+                        fileFormat = "APNG";
+                    }
                 }
 
                 // Generate output filename vars.
@@ -292,15 +302,16 @@ namespace YogMinify
                     fileFormat,
                     tempFile);
 
-                // PNG minifiers.
+                // APNG minifiers.
                 var apngopt = new Minifier(
                     "apngopt",
                     "APNGopt",
                     newFileQuotes + " " + newFileQuotes,
-                    "PNG",
+                    "APNG",
                     fileFormat,
                     tempFile);
 
+                // PNG minifiers.
                 var pngquant = new Minifier(
                     "pngquant",
                     "PNGquant",
