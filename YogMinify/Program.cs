@@ -86,6 +86,15 @@ namespace YogMinify
                 // Store current index value.
                 string file = files[i];
 
+                if (Directory.Exists(file))
+                {
+
+                }
+                else
+                {
+
+                }
+
                 // Initial file specific console output.
                 Console.WriteLine();
                 if (files.Length == 1)
@@ -96,75 +105,16 @@ namespace YogMinify
                 // Start timer.
                 var fileTimer = System.Diagnostics.Stopwatch.StartNew();
 
-                // Get file format.
-                string fileFormat = "";
-                int canvasWidth = 0;
-                int canvasHeight = 0;
+                // Get image data.
+                string fileFormat = InputData.GetFormat(file);
 
-                try
+                if (fileFormat == "SKIP")
                 {
-                    Bitmap img = (Bitmap)Image.FromFile(file);
-
-                    if (ImageFormat.Jpeg.Equals(img.RawFormat))
-                    {
-                        fileFormat = "JPG";
-                        canvasWidth = img.Width;
-                        canvasHeight = img.Height;
-                    }
-                    else if (ImageFormat.Png.Equals(img.RawFormat))
-                    {
-                        fileFormat = "PNG";
-                        canvasWidth = img.Width;
-                        canvasHeight = img.Height;
-                    }
-                    else if (ImageFormat.Gif.Equals(img.RawFormat))
-                    {
-                        fileFormat = "GIF";
-                        canvasWidth = img.Width;
-                        canvasHeight = img.Height;
-                    }
-
-                    // Free image file for use.
-                    img.Dispose();
-                }
-                catch (OutOfMemoryException e)
-                {
-                    // If ImageFormat can't read file check for TGA and similar by file extension.
-                    string ext = Path.GetExtension(file).ToUpper();
-
-                    if (".TGA" == ext)
-                    {
-                        Console.WriteLine("Found compatible extension: TGA");
-                        fileFormat = "TGA";
-                    }
-                    else
-                    {
-                        Console.WriteLine("Unknown file format! Skipping file...");
-                        Utils.Debug(e.ToString());
-                        goto SkipFile;
-                    }
-                }
-                catch (FileNotFoundException e)
-                {
-                    Console.WriteLine("File not found! Skipping file...");
-                    Utils.Debug(e.ToString());
-                    goto SkipFile;
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine("Something went wrong! Skipping file...");
-                    Utils.Debug(e.ToString());
                     goto SkipFile;
                 }
 
-                // If detected a PNG file search its header to check for Animated PNG.
-                if (fileFormat == "PNG")
-                {
-                    if (File.ReadLines(file).Any(line => line.Contains("acTL")))
-                    {
-                        fileFormat = "APNG";
-                    }
-                }
+                int canvasWidth = InputData.GetcanvasWidth(file);
+                int canvasHeight = InputData.GetcanvasHeight(file);
 
                 // Generate output filename vars.
                 string tempFile = Utils.AddPrefixSuffix(file, String.Format("{0}", HandleArgs.prefix), String.Format("{0}", HandleArgs.suffix), fileFormat, HandleArgs.output, true);
