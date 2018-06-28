@@ -41,6 +41,8 @@ namespace YogMinify
         public static int overwrite = 0;                 // Overwrite output file without asking.
         public static int pause = 0;                     // Show additional info on console.
         public static int verbosity = 0;                 // Show additional info on console.
+        public static int test = 0;                      // Test mode, no changes done to files.
+        public static int skipwarnings = 0;              // TODO: Skip warnings and continue operation.
         public static bool showLibraries = false;        // TODO: Show minify library information.
         public static bool showHelp = false;             // TODO: Show usage and arguments help.
         static List<string> inputFiles;                  // List containing input files found in command line.
@@ -77,8 +79,12 @@ namespace YogMinify
                    v => { if (v != null) ++overwrite; } },
                 { "a|pause", "Pause when finished.",
                    v => { if (v != null) ++pause; } },
-                { "v|verbose", "Increase debug message verbosity.",
+                { "v|verbose", "Increase debug message verbosity. Will look messy.",
                    v => { if (v != null) ++verbosity; } },
+                { "t|test", "Preview mode, outputs list of files that will be output without making any actual changes.",
+                   v => { if (v != null) ++test; } },
+                { "y|skipwarnings", "Skips warnings (like when you're about to minify lots of files) and continues operation.",
+                   v => { if (v != null) ++skipwarnings; } },
                 { "h|help",  "Show this message and exit.",
                    v => showHelp = v != null },
             };

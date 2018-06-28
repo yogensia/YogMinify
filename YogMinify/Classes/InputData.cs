@@ -70,7 +70,6 @@ namespace YogMinify
 
                 if (".TGA" == ext)
                 {
-                    Console.WriteLine("Found compatible extension: TGA");
                     return "TGA";
                 }
                 else
@@ -121,7 +120,7 @@ namespace YogMinify
                     return img.Width;
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return 0;
             }
@@ -154,7 +153,7 @@ namespace YogMinify
                     return img.Height;
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return 0;
             }

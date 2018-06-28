@@ -23,6 +23,7 @@
 #endregion License Information (GPL v3)
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace YogMinify
@@ -30,19 +31,21 @@ namespace YogMinify
     class HandleInput
     {
         // Recursive directory processor entry point method.
-        public void Process(string[] args)
+        public static string[] Process(string[] args)
         {
+            List<string> queueList = new List<string>();
+
             foreach (string path in args)
             {
                 // Input is a file.
                 if (File.Exists(path))
                 {
-                    ProcessFile(path);
+                    ProcessFile(path, queueList);
                 }
                 // Input is a directory.
                 else if (Directory.Exists(path))
                 {
-                    ProcessDirectory(path);
+                    ProcessDirectory(path, queueList);
                 }
                 // Input is invalid.
                 else
@@ -50,13 +53,15 @@ namespace YogMinify
                     Console.WriteLine("'{0}' is not a valid file or directory.", path);
                 }
             }
+
+            return queueList.ToArray();
         }
 
         // Process all files in the directory passed in, recurse on any directories 
         // that are found, and process the files they contain.
-        private static void ProcessDirectory(string currentDir)
+        private static void ProcessDirectory(string currentDir, List<string> queueList)
         {
-            Console.WriteLine("Found directory '{0}'.", currentDir);
+            //Console.WriteLine("Found directory '{0}'.", currentDir);
 
             // If there are any files at this level process them.
             string[] files;
@@ -64,7 +69,7 @@ namespace YogMinify
             files = Directory.GetFiles(currentDir);
 
             foreach (string file in files)
-                ProcessFile(file);
+                ProcessFile(file, queueList);
 
             // If there are any subdirectories at this level process them.
             string[] subdirectories;
@@ -72,13 +77,14 @@ namespace YogMinify
             subdirectories = Directory.GetDirectories(currentDir);
 
             foreach (string subdirectory in subdirectories)
-                ProcessDirectory(subdirectory);
+                ProcessDirectory(subdirectory, queueList);
         }
 
         // Process found files.
-        private static void ProcessFile(string currentFile)
+        private static void ProcessFile(string currentFile, List<string> queueList)
         {
-            Console.WriteLine("Found file '{0}'.", currentFile);
+            //Console.WriteLine("Found file '{0}'.", currentFile);
+            queueList.Add(currentFile);
         }
     }
 }

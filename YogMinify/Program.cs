@@ -72,41 +72,51 @@ namespace YogMinify
             }
 
             // Initial console output.
-            Console.WriteLine("{0} file(s) supplied.", files.Length);
+            Console.WriteLine("{0} inputs(s) supplied.", files.Length);
             Console.WriteLine();
             Console.WriteLine("===============");
 
-            // Iterate through paths supplied.
-            for (int i = 0; i < files.Length; i++)
+            if (HandleArgs.test != 0)
             {
-                // TODO: Handle directories: If current path is a file continue
-                // as usual. If it is a directory call ProcessDirectory() and
-                // work on all files found. Refactor Program.Main() as needed.
+                Console.WriteLine();
+                Console.WriteLine("TEST MODE ENABLED, NO ACTUAL CHANGES WILL BE MADE!");
+                Console.WriteLine();
+                Console.WriteLine("===============");
+            }
 
+            // Read inputs and store them in a list.
+            string[] queueArray = HandleInput.Process(files);
+
+            // Show a warning if there's lots of files to process.
+            // TODO: Test this skipwarning.
+            if (queueArray.Length > 30 && HandleArgs.test == 0 && HandleArgs.skipwarnings == 0)
+            {
+                Console.WriteLine();
+                Console.WriteLine("Careful! You're about to minify {0} images.", queueArray.Length);
+                Console.WriteLine("Are you sure you want to proceed?");
+                Console.WriteLine();
+                Console.WriteLine("Press \"Y\" to continue, any other key to abort.");
+                var cki = Console.ReadKey();
+                if (cki.KeyChar != 'Y' && cki.KeyChar != 'y')
+                {
+                    Environment.Exit(0);
+                }
+            }
+
+            // Iterate through paths supplied.
+            for (int i = 0; i < queueArray.Length; i++)
+            {
                 // Store current index value.
-                string file = files[i];
-
-                if (Directory.Exists(file))
-                {
-                    DirectoryInfo dir = new DirectoryInfo(file);
-                    foreach (var fi in dir.GetFiles())
-                    {
-                        Console.WriteLine(fi.Name);
-                    }
-                }
-                else
-                {
-
-                }
+                string file = queueArray[i];
 
                 // Start processing inputs.
-                ProcessQueue(files, i, file, windowTitle);
+                ProcessQueue(queueArray, i, file, windowTitle);
             }
 
             Utils.PressAnyKey(HandleArgs.pause);
         }
 
-        static void ProcessQueue(string[] files, int i, string file, string windowTitle)
+        private static void ProcessQueue(string[] files, int i, string file, string windowTitle)
         {
             // Initial file specific console output.
             Console.WriteLine();
@@ -133,6 +143,14 @@ namespace YogMinify
             string tempFile = Utils.AddPrefixSuffix(file, String.Format("{0}", HandleArgs.prefix), String.Format("{0}", HandleArgs.suffix), fileFormat, HandleArgs.output, true);
             string newFile = Utils.AddPrefixSuffix(file, String.Format("{0}", HandleArgs.prefix), String.Format("{0}", HandleArgs.suffix), fileFormat, HandleArgs.output);
             string newFileQuotes = '"' + tempFile + '"';
+
+            if (HandleArgs.test != 0)
+            {
+                // If test mode enable just write path to console and skip the actual minification.
+                Console.WriteLine("Input: '{0}'", file);
+                Console.WriteLine("Output: '{0}'", newFile);
+                goto SkipFile;
+            }
 
             Utils.Debug("Input: '{0}'", file);
             Utils.Debug("Temp: '{0}'", tempFile);
