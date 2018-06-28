@@ -93,9 +93,9 @@ namespace YogMinify
             {
                 Console.WriteLine();
                 Console.WriteLine("Careful! You're about to minify {0} images.", queueArray.Length);
-                Console.WriteLine("Are you sure you want to proceed?");
+                Console.WriteLine("Are you sure you want to do that?");
                 Console.WriteLine();
-                Console.WriteLine("Press \"Y\" to continue, any other key to abort.");
+                Console.WriteLine("Press \"Y\" to proceed, any other key to abort.");
                 var cki = Console.ReadKey();
                 if (cki.KeyChar != 'Y' && cki.KeyChar != 'y')
                 {

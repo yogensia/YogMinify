@@ -101,23 +101,13 @@ namespace YogMinify
             {
                 Bitmap img = (Bitmap)Image.FromFile(file);
 
-                if (ImageFormat.Jpeg.Equals(img.RawFormat))
+                if (ImageFormat.Jpeg.Equals(img.RawFormat) ||
+                    ImageFormat.Png.Equals(img.RawFormat) ||
+                    ImageFormat.Gif.Equals(img.RawFormat))
                 {
-                    // TODO: Need to dispose?
-                    // img.Dispose();
-                    return img.Width;
-                }
-                else if (ImageFormat.Png.Equals(img.RawFormat))
-                {
-                    // TODO: Need to dispose?
-                    // img.Dispose();
-                    return img.Width;
-                }
-                else if (ImageFormat.Gif.Equals(img.RawFormat))
-                {
-                    // TODO: Need to dispose?
-                    // img.Dispose();
-                    return img.Width;
+                    int width = img.Width;
+                    img.Dispose();
+                    return width;
                 }
             }
             catch (Exception)
@@ -134,23 +124,13 @@ namespace YogMinify
             {
                 Bitmap img = (Bitmap)Image.FromFile(file);
 
-                if (ImageFormat.Jpeg.Equals(img.RawFormat))
+                if (ImageFormat.Jpeg.Equals(img.RawFormat) ||
+                    ImageFormat.Png.Equals(img.RawFormat) ||
+                    ImageFormat.Gif.Equals(img.RawFormat))
                 {
-                    // TODO: Need to dispose?
-                    // img.Dispose();
-                    return img.Height;
-                }
-                else if (ImageFormat.Png.Equals(img.RawFormat))
-                {
-                    // TODO: Need to dispose?
-                    // img.Dispose();
-                    return img.Height;
-                }
-                else if (ImageFormat.Gif.Equals(img.RawFormat))
-                {
-                    // TODO: Need to dispose?
-                    // img.Dispose();
-                    return img.Height;
+                    int height = img.Height;
+                    img.Dispose();
+                    return height;
                 }
             }
             catch (Exception)
