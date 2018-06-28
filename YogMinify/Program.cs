@@ -312,13 +312,16 @@ namespace YogMinify
                     tempFile);
 
                 // PNG minifiers.
-                var pngquant = new Minifier(
-                    "pngquant",
-                    "PNGquant",
-                    "--strip --quality=85-90 --speed 1 --ext .png --force " + newFileQuotes,
-                    "PNG",
-                    fileFormat,
-                    tempFile);
+                if (HandleArgs.lossy != 0)
+                {
+                    var pngquant = new Minifier(
+                        "pngquant",
+                        "PNGquant",
+                        "--strip --quality=85-90 --speed 1 --ext .png --force " + newFileQuotes,
+                        "PNG",
+                        fileFormat,
+                        tempFile);
+                }
 
                 var PngOptimizer = new Minifier(
                     "PngOptimizer",

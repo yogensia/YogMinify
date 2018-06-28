@@ -37,6 +37,7 @@ namespace YogMinify
         public static string prefix = "";                // Prefix added to output filename.
         public static string suffix = ".min";            // Suffix added to output filename.
         public static string priority = "BelowNormal";   // Priority of Minifier processes.
+        public static int lossy = 0;                     // Allow lossy compression.
         public static int overwrite = 0;                 // Overwrite output file without asking.
         public static int pause = 0;                     // Show additional info on console.
         public static int verbosity = 0;                 // Show additional info on console.
@@ -59,6 +60,8 @@ namespace YogMinify
                    (int v) => quality = v },
                 { "l|libraries",  "Show a message with info about the minify libraries used by YogMinify and exit.",
                    v => showLibraries = v != null },
+                { "m|lossy", "Allow lossy compression on PNG.",
+                   v => { if (v != null) ++lossy; } },
                 { "p|prefix=", "Set prefix pattern used for output filename.\n" +
                   "By default no prefix is added.\n" +
                   "Example: 'min_' will result in 'min_image.jpg'.",
