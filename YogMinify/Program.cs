@@ -202,13 +202,16 @@ namespace YogMinify
                 fileFormat,
                 tempFile);
 
-            var gifsiclelossy = new Minifier( // TODO: only allow with a lossy argument.
-                "gifsicle-lossy",
-                "GIFsicle-Lossy",
-                "--lossy=35 -w -j --no-conserve-memory -o " + newFileQuotes + " -O3 --no-comments --no-extensions --no-names " + newFileQuotes,
-                "GIF",
-                fileFormat,
-                tempFile);
+            if (HandleArgs.lossy != 0)
+            {
+                var gifsiclelossy = new Minifier(
+                    "gifsicle-lossy",
+                    "GIFsicle-Lossy",
+                    "--lossy=35 -w -j --no-conserve-memory -o " + newFileQuotes + " -O3 --no-comments --no-extensions --no-names " + newFileQuotes,
+                    "GIF",
+                    fileFormat,
+                    tempFile);
+            }
 
             // JPEG minifiers.
             var jpegrecompress = new Minifier(
