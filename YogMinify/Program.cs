@@ -68,7 +68,11 @@ namespace YogMinify
                 HandleArgs.priority != "BelowNormal" &&
                 HandleArgs.priority != "Idle")
             {
-                Utils.SyntaxError("Invalid process priority value. Allowed values are: Idle, BelowNormal, Normal, AboveNormal, High, Realtime.");
+                Utils.SyntaxError("Invalid process priority value. Allowed values are:" +
+                    " Idle, BelowNormal, Normal, AboveNormal, High, Realtime.");
+
+                Utils.PressAnyKey(1);
+                Environment.Exit(0);
             }
 
             // Initial console output.
@@ -84,7 +88,7 @@ namespace YogMinify
                 Console.WriteLine("===============");
             }
 
-            // Read inputs and store them in a list.
+            // Read inputs and store them in an array.
             string[] queueArray = HandleInput.Process(files);
 
             // Show a warning if there's lots of files to process.

@@ -61,8 +61,6 @@ namespace YogMinify
         // that are found, and process the files they contain.
         private static void ProcessDirectory(string currentDir, List<string> queueList)
         {
-            //Console.WriteLine("Found directory '{0}'.", currentDir);
-
             // If there are any files at this level process them.
             string[] files;
 
@@ -83,7 +81,6 @@ namespace YogMinify
         // Process found files.
         private static void ProcessFile(string currentFile, List<string> queueList)
         {
-            //Console.WriteLine("Found file '{0}'.", currentFile);
             queueList.Add(currentFile);
         }
     }
