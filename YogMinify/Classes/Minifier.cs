@@ -1,4 +1,4 @@
-﻿#region License Information (GPL v3)
+#region License Information (GPL v3)
 
 /*
 
@@ -43,12 +43,12 @@ namespace YogMinify
         // Constructor.
         public Minifier(string _minifier, string _minifierNicename, string _arguments, string _minifyFormat, string _fileFormat, string _file)
         {
-            minifier         = _minifier;
+            minifier = _minifier;
             minifierNicename = _minifierNicename;
-            arguments        = _arguments;
-            minifyFormat     = _minifyFormat;
-            fileFormat       = _fileFormat;
-            file             = new FileInfo(_file);
+            arguments = _arguments;
+            minifyFormat = _minifyFormat;
+            fileFormat = _fileFormat;
+            file = new FileInfo(_file);
 
             // Check the image format matches this minifier, if so run it.
             if (minifyFormat == fileFormat)
@@ -87,7 +87,7 @@ namespace YogMinify
             }
             catch (Exception e)
             {
-                Console.WriteLine("An error ocurred while trying to execute '" + minifier + ".exe':");
+                Console.WriteLine("An error occurred while trying to execute '" + minifier + ".exe':");
                 Console.WriteLine(e.Message);
                 Utils.PressAnyKey(HandleArgs.pause);
                 Environment.Exit(0);

@@ -1,4 +1,4 @@
-﻿#region License Information (GPL v3)
+#region License Information (GPL v3)
 
 /*
 
@@ -50,7 +50,8 @@ namespace YogMinify
                     {
                         img.Dispose();
                         return "APNG";
-                    } else
+                    }
+                    else
                     {
                         img.Dispose();
                         return "PNG";

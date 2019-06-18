@@ -1,4 +1,4 @@
-﻿#region License Information (GPL v3)
+#region License Information (GPL v3)
 
 /*
 
@@ -150,7 +150,7 @@ namespace YogMinify
 
             if (HandleArgs.test != 0)
             {
-                // If test mode enable just write path to console and skip the actual minification.
+                // If test mode enabled, just write path to console and skip compression.
                 Console.WriteLine("Input: '{0}'", file);
                 Console.WriteLine("Output: '{0}'", newFile);
                 goto SkipFile;
@@ -176,7 +176,7 @@ namespace YogMinify
                 }
             }
 
-            // Make a copy of the file with subfix or prefix in temp folder and work on that.
+            // Make a copy of the file with suffix or prefix in temp folder and work on that.
             try
             {
                 File.Copy(file, tempFile);
@@ -465,7 +465,7 @@ namespace YogMinify
             FileInfo smallestFile = new FileInfo(tempFile.ToString() + "_smallest");
             smallestFile.Delete();
 
-            SkipFile:;
+        SkipFile:;
 
             // Some minifiers will change the window title, here we change it back.
             Console.Title = windowTitle;

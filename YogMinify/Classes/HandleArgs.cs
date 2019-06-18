@@ -1,4 +1,4 @@
-﻿#region License Information (GPL v3)
+#region License Information (GPL v3)
 
 /*
 
@@ -68,7 +68,7 @@ namespace YogMinify
                   "By default no prefix is added.\n" +
                   "Example: 'min_' will result in 'min_image.jpg'.",
                    (string v) => prefix = v },
-                { "s|suffix=", "Set subfix pattern used for output filename.\n" +
+                { "s|suffix=", "Set suffix pattern used for output filename.\n" +
                   "By default '.min' is appended to the filename.\nExample: 'image.min.jpg'.",
                    (string v) => suffix = v },
                 { "r|priority=", "Set CPU priority for minifier processes.\n" +
@@ -109,7 +109,7 @@ namespace YogMinify
                 Console.WriteLine(e.Message);
                 Console.WriteLine();
                 Console.WriteLine("Try `YogMinify --help' for more information.");
-                Console.WriteLine("If you think this is a bug feel free to report on Github: https://github.com/yogensia/YogMinify/issues");
+                Console.WriteLine("If you think this is a bug feel free to report on GitHub: https://github.com/yogensia/YogMinify/issues");
                 Utils.PressAnyKey(overwrite);
                 return null;
             }

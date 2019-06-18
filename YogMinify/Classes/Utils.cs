@@ -1,4 +1,4 @@
-﻿#region License Information (GPL v3)
+#region License Information (GPL v3)
 
 /*
 
@@ -31,7 +31,7 @@ namespace YogMinify
 {
     class Utils
     {
-        // Add a subfix to the filename, i.e. "image.min.jpg".
+        // Add a suffix to the filename, i.e. "image.min.jpg".
         // Third parameter is expected file format so that we can correct it if
         // it was originally wrong, like a JPEG file with ".png" extension.
         public static string AddPrefixSuffix(string filename, string prefix, string suffix, string format, string output, bool temp = false)
@@ -95,7 +95,7 @@ namespace YogMinify
             Console.WriteLine(e);
             Console.WriteLine();
             Console.WriteLine("Try 'YogMinify --help' for more information.");
-            Console.WriteLine("If you think this is a bug feel free to report on Github: https://github.com/yogensia/YogMinify/issues");
+            Console.WriteLine("If you think this is a bug feel free to report on GitHub: https://github.com/yogensia/YogMinify/issues");
             PressAnyKey(HandleArgs.overwrite);
         }
 

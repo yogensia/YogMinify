@@ -169,9 +169,9 @@ To get everything you need to build, install these:
 * [CMake](http://www.cmake.org/files/v3.0/cmake-3.0.0-win32-x86.exe)
 * [NASM](http://www.nasm.us/pub/nasm/releasebuilds/2.11.05/win32/)
 * [MinGW](http://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/installer/mingw-w64-install.exe/download) (installed to e.g. `C:\mingw`)
-* [Github for Windows](https://windows.github.com/)
+* [GitHub for Windows](https://windows.github.com/)
 
-Run Github for windows. In the settings, set **Git Bash** as the shell. Open Git Shell from the start menu.
+Run GitHub for windows. In the settings, set **Git Bash** as the shell. Open Git Shell from the start menu.
 
 ```bash
 # Update PATH to include MinGW/NASM bin folder, location on your system may vary
