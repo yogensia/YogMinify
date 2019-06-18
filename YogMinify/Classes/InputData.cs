@@ -30,7 +30,7 @@ using System.Linq;
 
 namespace YogMinify
 {
-    class InputData
+    internal static class InputData
     {
         public static string GetFormat(string file)
         {
@@ -102,9 +102,9 @@ namespace YogMinify
             {
                 Bitmap img = (Bitmap)Image.FromFile(file);
 
-                if (ImageFormat.Jpeg.Equals(img.RawFormat) ||
-                    ImageFormat.Png.Equals(img.RawFormat) ||
-                    ImageFormat.Gif.Equals(img.RawFormat))
+                if (ImageFormat.Jpeg.Equals(img.RawFormat)
+                    || ImageFormat.Png.Equals(img.RawFormat)
+                    || ImageFormat.Gif.Equals(img.RawFormat))
                 {
                     int width = img.Width;
                     img.Dispose();
@@ -125,9 +125,9 @@ namespace YogMinify
             {
                 Bitmap img = (Bitmap)Image.FromFile(file);
 
-                if (ImageFormat.Jpeg.Equals(img.RawFormat) ||
-                    ImageFormat.Png.Equals(img.RawFormat) ||
-                    ImageFormat.Gif.Equals(img.RawFormat))
+                if (ImageFormat.Jpeg.Equals(img.RawFormat)
+                    || ImageFormat.Png.Equals(img.RawFormat)
+                    || ImageFormat.Gif.Equals(img.RawFormat))
                 {
                     int height = img.Height;
                     img.Dispose();
@@ -141,6 +141,5 @@ namespace YogMinify
 
             return 0;
         }
-
     }
 }

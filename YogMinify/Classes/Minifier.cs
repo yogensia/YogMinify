@@ -30,7 +30,7 @@ using System.Threading;
 
 namespace YogMinify
 {
-    class Minifier
+    internal class Minifier
     {
         // Properties.
         public string minifier;          // Name of the minifier executable.
@@ -161,7 +161,7 @@ namespace YogMinify
                 // finishes compression to maintain performance.
                 if (process.HasExited) break;
 
-                // Loops help keep higher frametimes.
+                // Loops help keep higher frame-times.
                 // Longer Sleep times would negatively affect performance.
                 for (int i = 0; i < 50; i++)
                 {

@@ -28,7 +28,7 @@ using Mono.Options;
 
 namespace YogMinify
 {
-    class HandleArgs
+    internal static class HandleArgs
     {
         // Set variables.
         public static string output = "";                // TODO: Output path.
@@ -42,10 +42,10 @@ namespace YogMinify
         public static int pause = 0;                     // Show additional info on console.
         public static int verbosity = 0;                 // Show additional info on console.
         public static int test = 0;                      // Test mode, no changes done to files.
-        public static int skipwarnings = 0;              // TODO: Skip warnings and continue operation.
+        public static int skipwarnings = 0;              // Skip warnings and continue operation.
         public static bool showLibraries = false;        // TODO: Show minify library information.
         public static bool showHelp = false;             // TODO: Show usage and arguments help.
-        static List<string> inputFiles;                  // List containing input files found in command line.
+        private static List<string> inputFiles;          // List containing input files found in command line.
 
         public static OptionSet GetOptionSet(string[] args)
         {

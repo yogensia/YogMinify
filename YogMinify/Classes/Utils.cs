@@ -29,7 +29,7 @@ using Mono.Options;
 
 namespace YogMinify
 {
-    class Utils
+    internal static class Utils
     {
         // Add a suffix to the filename, i.e. "image.min.jpg".
         // Third parameter is expected file format so that we can correct it if

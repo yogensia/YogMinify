@@ -32,9 +32,9 @@ using System.Reflection;
 
 namespace YogMinify
 {
-    class Program
+    internal static class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             // Increment version.
             Version version = Assembly.GetExecutingAssembly().GetName().Version;
@@ -61,12 +61,12 @@ namespace YogMinify
             }
 
             // Check for valid arguments.
-            if (HandleArgs.priority != "RealTime" &&
-                HandleArgs.priority != "High" &&
-                HandleArgs.priority != "AboveNormal" &&
-                HandleArgs.priority != "Normal" &&
-                HandleArgs.priority != "BelowNormal" &&
-                HandleArgs.priority != "Idle")
+            if (HandleArgs.priority != "RealTime"
+                && HandleArgs.priority != "High"
+                && HandleArgs.priority != "AboveNormal"
+                && HandleArgs.priority != "Normal"
+                && HandleArgs.priority != "BelowNormal"
+                && HandleArgs.priority != "Idle")
             {
                 Utils.SyntaxError("Invalid process priority value. Allowed values are:" +
                     " Idle, BelowNormal, Normal, AboveNormal, High, Realtime.");
@@ -92,7 +92,6 @@ namespace YogMinify
             string[] queueArray = HandleInput.Process(files);
 
             // Show a warning if there's lots of files to process.
-            // TODO: Test this skipwarning.
             if (queueArray.Length > 30 && HandleArgs.test == 0 && HandleArgs.skipwarnings == 0)
             {
                 Console.WriteLine();
@@ -198,7 +197,7 @@ namespace YogMinify
             Console.WriteLine("-----------------------------------");
 
             // GIF minifiers.
-            var gifsicle = new Minifier(
+            _ = new Minifier(
                 "gifsicle",
                 "GIFsicle",
                 "-w -j --no-conserve-memory -o " + newFileQuotes + " -O3 --no-comments --no-extensions --no-names " + newFileQuotes,
@@ -208,7 +207,7 @@ namespace YogMinify
 
             if (HandleArgs.lossy != 0)
             {
-                var gifsiclelossy = new Minifier(
+                _ = new Minifier(
                     "gifsicle-lossy",
                     "GIFsicle-Lossy",
                     "--lossy=35 -w -j --no-conserve-memory -o " + newFileQuotes + " -O3 --no-comments --no-extensions --no-names " + newFileQuotes,
@@ -218,71 +217,63 @@ namespace YogMinify
             }
 
             // JPEG minifiers.
-            var jpegrecompress = new Minifier(
+            _ = new Minifier(
                 "jpeg-recompress",
                 "JPEG-Recompress",
                 "--method smallfry --quality high --min " + HandleArgs.quality + " --subsample disable --quiet --strip " + newFileQuotes + " " + newFileQuotes,
                 "JPG",
                 fileFormat,
                 tempFile);
-
-            var jhead = new Minifier(
+            _ = new Minifier(
                 "jhead",
                 "JHead",
                 "-q -autorot -purejpg -di -dx -dt -zt " + newFileQuotes,
                 "JPG",
                 fileFormat,
                 tempFile);
-
-            var leanify = new Minifier(
+            _ = new Minifier(
                 "leanify",
                 "Leanify",
                 "-q " + newFileQuotes,
                 "JPG",
                 fileFormat,
                 tempFile);
-
-            var magick = new Minifier(
+            _ = new Minifier(
                 "magick",
                 "ImageMagick",
                 "convert -quiet -interlace Plane -define jpeg:optimize-coding=true -strip " + newFileQuotes + " " + newFileQuotes,
                 "JPG",
                 fileFormat,
                 tempFile);
-
-            var jpegoptim = new Minifier(
+            _ = new Minifier(
                 "jpegoptim",
                 "JPEGoptim",
                 "-o -q --all-progressive --strip-all --max=" + HandleArgs.quality + " " + newFileQuotes,
                 "JPG",
                 fileFormat,
                 tempFile);
-
-            var jpegtran = new Minifier(
+            _ = new Minifier(
                 "jpegtran",
                 "JPEGtran",
                 "-progressive -optimize -copy none " + newFileQuotes + " " + newFileQuotes,
                 "JPG",
                 fileFormat,
                 tempFile);
-
-            var mozjpegtran = new Minifier(
+            _ = new Minifier(
                 "mozjpegtran",
                 "MozJPEGtran",
                 "-outfile " + newFileQuotes + " -progressive -copy none " + newFileQuotes,
                 "JPG",
                 fileFormat,
                 tempFile);
-
-            var ECT = new Minifier(
+            _ = new Minifier(
                 "ECT",
                 "ECT",
                 "-quiet --allfilters --mt-deflate -progressive -strip " + newFileQuotes,
                 "JPG",
                 fileFormat,
                 tempFile);
-
-            var pingo = new Minifier(
+            _ = new Minifier(
                 "pingo",
                 "Pingo",
                 "-progressive " + newFileQuotes,
@@ -291,7 +282,7 @@ namespace YogMinify
                 tempFile);
 
             // APNG minifiers.
-            var apngopt = new Minifier(
+            _ = new Minifier(
                 "apngopt",
                 "APNGopt",
                 newFileQuotes + " " + newFileQuotes,
@@ -302,7 +293,7 @@ namespace YogMinify
             // PNG minifiers.
             if (HandleArgs.lossy != 0)
             {
-                var pngquant = new Minifier(
+                _ = new Minifier(
                     "pngquant",
                     "PNGquant",
                     "--strip --quality=85-90 --speed 1 --ext .png --force " + newFileQuotes,
@@ -311,71 +302,63 @@ namespace YogMinify
                     tempFile);
             }
 
-            var PngOptimizer = new Minifier(
+            _ = new Minifier(
                 "PngOptimizer",
                 "PNGOptimizer",
                 "-file:" + newFileQuotes,
                 "PNG",
                 fileFormat,
                 tempFile);
-
-            var truepng = new Minifier(
+            _ = new Minifier(
                 "truepng",
                 "TruePNG",
                 "-o2 -tz -md remove all -g0 /i0 /tz /quiet /y /out " + newFileQuotes + " " + newFileQuotes,
                 "PNG",
                 fileFormat,
                 tempFile);
-
-            var optipng = new Minifier(
+            _ = new Minifier(
                 "optipng",
                 "OptiPNG",
                 "--zw32k -quiet -o6 -strip all " + newFileQuotes,
                 "PNG",
                 fileFormat,
                 tempFile);
-
-            var leanifyPNG = new Minifier(
+            _ = new Minifier(
                 "leanify",
                 "Leanify",
                 "-q -i 6 " + newFileQuotes,
                 "PNG",
                 fileFormat,
                 tempFile);
-
-            var pngrewrite = new Minifier(
+            _ = new Minifier(
                 "pngrewrite",
                 "PNGrewrite",
                 newFileQuotes + " " + newFileQuotes,
                 "PNG",
                 fileFormat,
                 tempFile);
-
-            var advpng = new Minifier(
+            _ = new Minifier(
                 "advpng",
                 "AdvPNG",
                 "-z -q -4 -i 6 " + newFileQuotes,
                 "PNG",
                 fileFormat,
                 tempFile);
-
-            var ECTPNG = new Minifier(
+            _ = new Minifier(
                 "ECT",
                 "ECT",
                 "-quiet --allfilters --mt-deflate -strip -9 " + newFileQuotes,
                 "PNG",
                 fileFormat,
                 tempFile);
-
-            var pingoPNG = new Minifier(
+            _ = new Minifier(
                 "pingo",
                 "Pingo",
                 "-s8 " + newFileQuotes,
                 "PNG",
                 fileFormat,
                 tempFile);
-
-            var deflopt = new Minifier(
+            _ = new Minifier(
                 "deflopt",
                 "Deflopt",
                 "/a /b /s " + newFileQuotes,
@@ -384,7 +367,7 @@ namespace YogMinify
                 tempFile);
 
             // TGA minifiers.
-            var magickTGA = new Minifier(
+            _ = new Minifier(
                 "magick",
                 "ImageMagick",
                 "convert -quiet -compress RLE -strip " + newFileQuotes + " " + newFileQuotes,

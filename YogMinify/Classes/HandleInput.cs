@@ -28,7 +28,7 @@ using System.IO;
 
 namespace YogMinify
 {
-    class HandleInput
+    internal static class HandleInput
     {
         // Recursive directory processor entry point method.
         public static string[] Process(string[] args)
@@ -62,17 +62,13 @@ namespace YogMinify
         private static void ProcessDirectory(string currentDir, List<string> queueList)
         {
             // If there are any files at this level process them.
-            string[] files;
-
-            files = Directory.GetFiles(currentDir);
+            string[] files = Directory.GetFiles(currentDir);
 
             foreach (string file in files)
                 ProcessFile(file, queueList);
 
             // If there are any subdirectories at this level process them.
-            string[] subdirectories;
-
-            subdirectories = Directory.GetDirectories(currentDir);
+            string[] subdirectories = Directory.GetDirectories(currentDir);
 
             foreach (string subdirectory in subdirectories)
                 ProcessDirectory(subdirectory, queueList);
